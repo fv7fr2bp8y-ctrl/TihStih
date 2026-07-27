@@ -1,0 +1,6 @@
+name = "askbible-gemini-proxy"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Ключът НЕ се слага тук — задава се като secret:
+#   npx wrangler secret put GEMINI_API_KEY

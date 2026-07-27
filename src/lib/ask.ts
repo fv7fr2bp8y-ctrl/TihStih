@@ -1,4 +1,4 @@
-import { GEMINI_API_KEY, GEMINI_AVAILABLE } from './gemini'
+import { GEMINI_PROXY_URL, PROXY_AVAILABLE } from './gemini'
 import { assetUrl } from './asset'
 import type { Passage, PassageCategory } from '../types'
 
@@ -7,7 +7,7 @@ import type { Passage, PassageCategory } from '../types'
 const MODEL = 'gemini-flash-lite-latest'
 const TIMEOUT_MS = 12_000
 
-export const ASK_ENABLED = GEMINI_AVAILABLE
+export const ASK_ENABLED = PROXY_AVAILABLE
 
 /** Манифест на 66-те книги — {code, bg, en, t, chapters}. Зареден веднъж. */
 let manifestPromise: Promise<{ code: string; bg: string; en: string; t: 'OT' | 'NT'; chapters: number }[]> | null = null
@@ -47,12 +47,12 @@ function deriveCategory(code: string, t: 'OT' | 'NT'): PassageCategory {
 
 /** Общо извикване на Gemini с JSON схема. Връща разбрания обект или null. */
 async function callGemini(prompt: string, schema: object): Promise<Record<string, unknown> | null> {
-  if (!GEMINI_API_KEY) return null
+  if (!GEMINI_PROXY_URL) return null
   try {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+      `${GEMINI_PROXY_URL}/v1beta/models/${MODEL}:generateContent`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
